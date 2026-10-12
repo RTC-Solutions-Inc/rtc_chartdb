@@ -59,6 +59,8 @@ export const Menu: React.FC<MenuProps> = () => {
         showFieldAttributes,
         setShowMiniMapOnCanvas,
         showMiniMapOnCanvas,
+        setShowColorLegend,
+        showColorLegend,
         showDBViews,
         setShowDBViews,
     } = useLocalConfig();
@@ -144,6 +146,10 @@ export const Menu: React.FC<MenuProps> = () => {
     const showOrHideMiniMap = useCallback(() => {
         setShowMiniMapOnCanvas(!showMiniMapOnCanvas);
     }, [showMiniMapOnCanvas, setShowMiniMapOnCanvas]);
+
+    const showOrHideColorLegend = useCallback(() => {
+        setShowColorLegend(!showColorLegend);
+    }, [showColorLegend, setShowColorLegend]);
 
     const emojiAI = '✨';
 
@@ -396,6 +402,11 @@ export const Menu: React.FC<MenuProps> = () => {
                         {showMiniMapOnCanvas
                             ? t('menu.view.hide_minimap')
                             : t('menu.view.show_minimap')}
+                    </MenubarItem>
+                    <MenubarItem onClick={showOrHideColorLegend}>
+                        {showColorLegend
+                            ? t('menu.view.hide_color_legend')
+                            : t('menu.view.show_color_legend')}
                     </MenubarItem>
                     <MenubarSeparator />
                     <MenubarSub>

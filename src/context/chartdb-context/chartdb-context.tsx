@@ -14,6 +14,10 @@ import { EventEmitter } from 'ahooks/lib/useEventEmitter';
 import type { Area } from '@/lib/domain/area';
 import type { DBCustomType } from '@/lib/domain/db-custom-type';
 import type { Note } from '@/lib/domain/note';
+import type {
+    ColorLegend,
+    RecolorEntitiesChange,
+} from '@/lib/domain/color-legend';
 
 export type ChartDBEventType =
     | 'add_tables'
@@ -77,6 +81,7 @@ export interface ChartDBContext {
     areas: Area[];
     customTypes: DBCustomType[];
     notes: Note[];
+    colorLegend?: ColorLegend;
     currentDiagram: Diagram;
     events: EventEmitter<ChartDBEvent>;
     readonly?: boolean;
@@ -88,6 +93,14 @@ export interface ChartDBContext {
     updateDiagramId: (id: string) => Promise<void>;
     updateDiagramName: (
         name: string,
+        options?: { updateHistory: boolean }
+    ) => Promise<void>;
+    updateColorLegend: (
+        colorLegend: ColorLegend | undefined,
+        options?: { updateHistory: boolean }
+    ) => Promise<void>;
+    recolorEntities: (
+        change: RecolorEntitiesChange,
         options?: { updateHistory: boolean }
     ) => Promise<void>;
     loadDiagram: (diagramId: string) => Promise<Diagram | undefined>;
@@ -354,6 +367,8 @@ export const chartDBContext = createContext<ChartDBContext>({
     // General operations
     updateDiagramId: emptyFn,
     updateDiagramName: emptyFn,
+    updateColorLegend: emptyFn,
+    recolorEntities: emptyFn,
     updateDiagramUpdatedAt: emptyFn,
     loadDiagram: emptyFn,
     loadDiagramFromData: emptyFn,

@@ -44,6 +44,8 @@ export const es: LanguageTranslation = {
                 // TODO: Translate
                 show_minimap: 'Show Mini Map',
                 hide_minimap: 'Hide Mini Map',
+                show_color_legend: 'Show Color Legend',
+                hide_color_legend: 'Hide Color Legend',
             },
             backup: {
                 backup: 'Respaldo',
@@ -526,6 +528,20 @@ export const es: LanguageTranslation = {
             new_relationship: 'Nueva Relación',
             new_area: 'Nueva Área',
             new_note: 'Nueva Nota',
+            set_color: 'Set Color',
+            set_color_count: 'Set Color ({{count}})',
+        },
+
+        color_legend: {
+            title: 'Legend',
+            tables: 'Tables',
+            notes: 'Notes',
+            areas: 'Areas',
+            add: 'Add',
+            meaning_placeholder: 'Meaning',
+            minimize: 'Minimize legend',
+            expand: 'Expand legend',
+            remove: 'Remove',
         },
 
         table_node_context_menu: {

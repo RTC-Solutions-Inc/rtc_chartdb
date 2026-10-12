@@ -10,6 +10,8 @@ const showFieldAttributesKey = 'show_field_attributes';
 const githubRepoOpenedKey = 'github_repo_opened';
 const starUsDialogLastOpenKey = 'star_us_dialog_last_open';
 const showMiniMapOnCanvasKey = 'show_minimap_on_canvas';
+const showColorLegendKey = 'show_color_legend';
+const colorLegendMinimizedKey = 'color_legend_minimized';
 const showDBViewsKey = 'show_db_views';
 
 export const LocalConfigProvider: React.FC<React.PropsWithChildren> = ({
@@ -50,6 +52,16 @@ export const LocalConfigProvider: React.FC<React.PropsWithChildren> = ({
             (localStorage.getItem(showMiniMapOnCanvasKey) || 'true') === 'true'
         );
 
+    const [showColorLegend, setShowColorLegend] = React.useState<boolean>(
+        (localStorage.getItem(showColorLegendKey) || 'true') === 'true'
+    );
+
+    const [colorLegendMinimized, setColorLegendMinimized] =
+        React.useState<boolean>(
+            (localStorage.getItem(colorLegendMinimizedKey) || 'false') ===
+                'true'
+        );
+
     useEffect(() => {
         localStorage.setItem(
             starUsDialogLastOpenKey,
@@ -84,6 +96,17 @@ export const LocalConfigProvider: React.FC<React.PropsWithChildren> = ({
         );
     }, [showMiniMapOnCanvas]);
 
+    useEffect(() => {
+        localStorage.setItem(showColorLegendKey, showColorLegend.toString());
+    }, [showColorLegend]);
+
+    useEffect(() => {
+        localStorage.setItem(
+            colorLegendMinimizedKey,
+            colorLegendMinimized.toString()
+        );
+    }, [colorLegendMinimized]);
+
     return (
         <LocalConfigContext.Provider
             value={{
@@ -103,6 +126,10 @@ export const LocalConfigProvider: React.FC<React.PropsWithChildren> = ({
                 setStarUsDialogLastOpen,
                 showMiniMapOnCanvas,
                 setShowMiniMapOnCanvas,
+                showColorLegend,
+                setShowColorLegend,
+                colorLegendMinimized,
+                setColorLegendMinimized,
             }}
         >
             {children}

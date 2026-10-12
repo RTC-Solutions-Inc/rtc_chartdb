@@ -14,6 +14,13 @@ import { useLayout } from '@/hooks/use-layout';
 import { cloneTable } from '@/lib/clone';
 import type { DBTable } from '@/lib/domain/db-table';
 import { arrangeTablesForArea } from '@/lib/utils/area-utils';
+import { SetColorMenu } from '../set-color-menu';
+import {
+    getColorChangeTargets,
+    toRecolorChange,
+    useSelectedDiagramNodes,
+    useViewIds,
+} from '../recolor-targets';
 import {
     Check,
     Copy,
@@ -23,7 +30,7 @@ import {
     Trash2,
     Workflow,
 } from 'lucide-react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCanvas } from '@/hooks/use-canvas';
 import { useReactFlow, useStore } from '@xyflow/react';
@@ -45,6 +52,7 @@ export const TableNodeContextMenu: React.FC<
         relationships,
         updateArea,
         updateTablesState,
+        recolorEntities,
     } = useChartDB();
     const { closeAllTablesInSidebar } = useLayout();
     const { t } = useTranslation();
@@ -60,6 +68,23 @@ export const TableNodeContextMenu: React.FC<
     );
     const isMultiSelect =
         selectedTableIds.length > 1 && selectedTableIds.includes(table.id);
+    const selectedDiagramNodes = useSelectedDiagramNodes();
+    const viewIds = useViewIds();
+    const colorTargets = useMemo(
+        () =>
+            getColorChangeTargets({
+                selected: selectedDiagramNodes,
+                viewIds,
+                clicked: { id: table.id, type: 'table' },
+            }),
+        [selectedDiagramNodes, viewIds, table.id]
+    );
+    const setColor = useCallback(
+        (color: string) => {
+            recolorEntities(toRecolorChange(colorTargets, color));
+        },
+        [recolorEntities, colorTargets]
+    );
 
     const duplicateTableHandler: React.MouseEventHandler<HTMLDivElement> =
         useCallback(
@@ -307,6 +332,7 @@ export const TableNodeContextMenu: React.FC<
                         )}
                     </ContextMenuSubContent>
                 </ContextMenuSub>
+                <SetColorMenu targets={colorTargets} onColor={setColor} />
                 <ContextMenuSeparator />
                 <ContextMenuItem
                     onClick={removeTableHandler}

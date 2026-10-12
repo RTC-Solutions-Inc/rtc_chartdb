@@ -12,6 +12,7 @@ import type { DBCustomType } from './db-custom-type';
 import { dbCustomTypeSchema } from './db-custom-type';
 import type { Note } from './note';
 import { noteSchema } from './note';
+import { colorLegendSchema, type ColorLegend } from './color-legend';
 
 export interface Diagram {
     id: string;
@@ -24,6 +25,7 @@ export interface Diagram {
     areas?: Area[];
     customTypes?: DBCustomType[];
     notes?: Note[];
+    colorLegend?: ColorLegend;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -39,6 +41,7 @@ export const diagramSchema: z.ZodType<Diagram> = z.object({
     areas: z.array(areaSchema).optional(),
     customTypes: z.array(dbCustomTypeSchema).optional(),
     notes: z.array(noteSchema).optional(),
+    colorLegend: colorLegendSchema.optional(),
     createdAt: z.date(),
     updatedAt: z.date(),
 });

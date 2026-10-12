@@ -43,6 +43,8 @@ export const ru: LanguageTranslation = {
                 hide_dependencies: 'Скрыть зависимости',
                 show_minimap: 'Показать мини-карту',
                 hide_minimap: 'Скрыть мини-карту',
+                show_color_legend: 'Show Color Legend',
+                hide_color_legend: 'Hide Color Legend',
             },
             backup: {
                 backup: 'Бэкап',
@@ -522,6 +524,20 @@ export const ru: LanguageTranslation = {
             new_relationship: 'Создать отношение',
             new_area: 'Новая область',
             new_note: 'Новая Заметка',
+            set_color: 'Set Color',
+            set_color_count: 'Set Color ({{count}})',
+        },
+
+        color_legend: {
+            title: 'Legend',
+            tables: 'Tables',
+            notes: 'Notes',
+            areas: 'Areas',
+            add: 'Add',
+            meaning_placeholder: 'Meaning',
+            minimize: 'Minimize legend',
+            expand: 'Expand legend',
+            remove: 'Remove',
         },
 
         table_node_context_menu: {

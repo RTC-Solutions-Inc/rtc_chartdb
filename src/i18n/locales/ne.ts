@@ -44,6 +44,8 @@ export const ne: LanguageTranslation = {
                 // TODO: Translate
                 show_minimap: 'Show Mini Map',
                 hide_minimap: 'Hide Mini Map',
+                show_color_legend: 'Show Color Legend',
+                hide_color_legend: 'Hide Color Legend',
             },
             // TODO: Translate
             backup: {
@@ -527,6 +529,20 @@ export const ne: LanguageTranslation = {
             // TODO: Translate
             new_area: 'नयाँ क्षेत्र',
             new_note: 'नयाँ नोट',
+            set_color: 'Set Color',
+            set_color_count: 'Set Color ({{count}})',
+        },
+
+        color_legend: {
+            title: 'Legend',
+            tables: 'Tables',
+            notes: 'Notes',
+            areas: 'Areas',
+            add: 'Add',
+            meaning_placeholder: 'Meaning',
+            minimize: 'Minimize legend',
+            expand: 'Expand legend',
+            remove: 'Remove',
         },
 
         table_node_context_menu: {

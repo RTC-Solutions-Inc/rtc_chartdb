@@ -8,6 +8,10 @@ import type { DBDependency } from '@/lib/domain/db-dependency';
 import type { Area } from '@/lib/domain/area';
 import type { DBCustomType } from '@/lib/domain/db-custom-type';
 import type { Note } from '@/lib/domain/note';
+import type {
+    ColorLegend,
+    RecolorEntitiesChange,
+} from '@/lib/domain/color-legend';
 
 type Action = keyof ChartDBContext;
 
@@ -21,6 +25,18 @@ type RedoUndoActionUpdateDiagramName = RedoUndoActionBase<
     'updateDiagramName',
     { name: string },
     { name: string }
+>;
+
+type RedoUndoActionUpdateColorLegend = RedoUndoActionBase<
+    'updateColorLegend',
+    { colorLegend?: ColorLegend },
+    { colorLegend?: ColorLegend }
+>;
+
+type RedoUndoActionRecolorEntities = RedoUndoActionBase<
+    'recolorEntities',
+    RecolorEntitiesChange,
+    RecolorEntitiesChange
 >;
 
 type RedoUndoActionUpdateTable = RedoUndoActionBase<
@@ -212,6 +228,8 @@ export type RedoUndoAction =
     | RedoUndoActionRemoveTables
     | RedoUndoActionUpdateTable
     | RedoUndoActionUpdateDiagramName
+    | RedoUndoActionUpdateColorLegend
+    | RedoUndoActionRecolorEntities
     | RedoUndoActionUpdateTablesState
     | RedoUndoActionAddField
     | RedoUndoActionRemoveField

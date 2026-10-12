@@ -43,6 +43,8 @@ export const uk: LanguageTranslation = {
                 hide_dependencies: 'Приховати залежності',
                 show_minimap: 'Показати мінімапу',
                 hide_minimap: 'Приховати мінімапу',
+                show_color_legend: 'Show Color Legend',
+                hide_color_legend: 'Hide Color Legend',
             },
             backup: {
                 backup: 'Резервне копіювання',
@@ -522,6 +524,20 @@ export const uk: LanguageTranslation = {
             // TODO: Translate
             new_area: 'Нова область',
             new_note: 'Нова Нотатка',
+            set_color: 'Set Color',
+            set_color_count: 'Set Color ({{count}})',
+        },
+
+        color_legend: {
+            title: 'Legend',
+            tables: 'Tables',
+            notes: 'Notes',
+            areas: 'Areas',
+            add: 'Add',
+            meaning_placeholder: 'Meaning',
+            minimize: 'Minimize legend',
+            expand: 'Expand legend',
+            remove: 'Remove',
         },
 
         table_node_context_menu: {

@@ -44,6 +44,8 @@ export const tr: LanguageTranslation = {
                 // TODO: Translate
                 show_minimap: 'Show Mini Map',
                 hide_minimap: 'Hide Mini Map',
+                show_color_legend: 'Show Color Legend',
+                hide_color_legend: 'Hide Color Legend',
             },
             // TODO: Translate
             backup: {
@@ -513,7 +515,21 @@ export const tr: LanguageTranslation = {
             // TODO: Translate
             new_area: 'Yeni Alan',
             new_note: 'Yeni Not',
+            set_color: 'Set Color',
+            set_color_count: 'Set Color ({{count}})',
         },
+        color_legend: {
+            title: 'Legend',
+            tables: 'Tables',
+            notes: 'Notes',
+            areas: 'Areas',
+            add: 'Add',
+            meaning_placeholder: 'Meaning',
+            minimize: 'Minimize legend',
+            expand: 'Expand legend',
+            remove: 'Remove',
+        },
+
         table_node_context_menu: {
             edit_table: 'Tabloyu Düzenle',
             delete_table: 'Tabloyu Sil',

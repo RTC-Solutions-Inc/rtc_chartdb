@@ -93,6 +93,8 @@ import { AreaNode } from './area-node/area-node';
 import type { Area } from '@/lib/domain/area';
 import type { NoteNodeType } from './note-node/note-node';
 import { NoteNode } from './note-node/note-node';
+import { ColorLegendPanel } from './color-legend/color-legend';
+import { SelectionColorButton } from './selection-color-button';
 import type { Note } from '@/lib/domain/note';
 import type { TempCursorNodeType } from './temp-cursor-node/temp-cursor-node';
 import {
@@ -1900,6 +1902,8 @@ export const Canvas: React.FC<CanvasProps> = ({ initialTables }) => {
                     {showFilter ? (
                         <CanvasFilter onClose={() => setShowFilter(false)} />
                     ) : null}
+                    <ColorLegendPanel />
+                    <SelectionColorButton />
                 </ReactFlow>
                 <MarkerDefinitions />
             </div>

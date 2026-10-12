@@ -43,6 +43,8 @@ export const fr: LanguageTranslation = {
                 hide_dependencies: 'Masquer les Dépendances',
                 show_minimap: 'Afficher la Mini Carte',
                 hide_minimap: 'Masquer la Mini Carte',
+                show_color_legend: 'Show Color Legend',
+                hide_color_legend: 'Hide Color Legend',
             },
             backup: {
                 backup: 'Sauvegarde',
@@ -521,6 +523,20 @@ export const fr: LanguageTranslation = {
             new_relationship: 'Nouvelle Relation',
             new_area: 'Nouvelle Zone',
             new_note: 'Nouvelle Note',
+            set_color: 'Set Color',
+            set_color_count: 'Set Color ({{count}})',
+        },
+
+        color_legend: {
+            title: 'Legend',
+            tables: 'Tables',
+            notes: 'Notes',
+            areas: 'Areas',
+            add: 'Add',
+            meaning_placeholder: 'Meaning',
+            minimize: 'Minimize legend',
+            expand: 'Expand legend',
+            remove: 'Remove',
         },
 
         table_node_context_menu: {

@@ -43,6 +43,8 @@ export const hr: LanguageTranslation = {
                 hide_dependencies: 'Sakrij ovisnosti',
                 show_minimap: 'Prikaži mini kartu',
                 hide_minimap: 'Sakrij mini kartu',
+                show_color_legend: 'Show Color Legend',
+                hide_color_legend: 'Hide Color Legend',
             },
             backup: {
                 backup: 'Sigurnosna kopija',
@@ -518,6 +520,20 @@ export const hr: LanguageTranslation = {
             new_relationship: 'Nova veza',
             new_area: 'Novo područje',
             new_note: 'Nova Bilješka',
+            set_color: 'Set Color',
+            set_color_count: 'Set Color ({{count}})',
+        },
+
+        color_legend: {
+            title: 'Legend',
+            tables: 'Tables',
+            notes: 'Notes',
+            areas: 'Areas',
+            add: 'Add',
+            meaning_placeholder: 'Meaning',
+            minimize: 'Minimize legend',
+            expand: 'Expand legend',
+            remove: 'Remove',
         },
 
         table_node_context_menu: {

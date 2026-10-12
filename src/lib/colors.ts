@@ -1,16 +1,20 @@
 export const colorOptions = [
-    '#ff6363', // A brighter red.
-    '#ff6b8a', // A vibrant pink.
-    '#c05dcf', // A rich purple.
-    '#b067e9', // A lighter purple.
-    '#8a61f5', // A bold indigo.
-    '#7175fa', // A lighter indigo.
-    '#8eb7ff', // A sky blue.
-    '#42e0c0', // A fresh aqua.
-    '#4dee8a', // A mint green.
-    '#9ef07a', // A lime green.
-    '#ffe374', // A warm yellow.
-    '#ff9f74', // A peachy orange.
+    '#f43f5e', // Red.
+    '#ec4899', // Pink.
+    '#e879f9', // Magenta.
+    '#a855f7', // Violet.
+    '#6366f1', // Indigo.
+    '#3b82f6', // Blue.
+    '#38bdf8', // Sky.
+    '#22d3ee', // Cyan.
+    '#2dd4bf', // Teal.
+    '#4ade80', // Green.
+    '#a3e635', // Lime.
+    '#facc15', // Yellow.
+    '#fb923c', // Orange.
+    '#d97706', // Copper.
+    '#78716c', // Stone.
+    '#94a3b8', // Slate.
 ];
 
 export const randomColor = () => {
@@ -19,5 +23,5 @@ export const randomColor = () => {
 
 export const viewColor = '#b0b0b0';
 export const materializedViewColor = '#7d7d7d';
-export const defaultTableColor = '#8eb7ff';
-export const defaultAreaColor = '#b067e9';
+export const defaultTableColor = '#3b82f6';
+export const defaultAreaColor = '#a855f7';

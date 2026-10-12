@@ -10,8 +10,15 @@ import { useChartDB } from '@/hooks/use-chartdb';
 import type { Area } from '@/lib/domain/area';
 import { arrangeTablesForArea } from '@/lib/utils/area-utils';
 import { LayoutGrid, Pencil, Trash2 } from 'lucide-react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useReactFlow } from '@xyflow/react';
+import { SetColorMenu } from '../set-color-menu';
+import {
+    getColorChangeTargets,
+    toRecolorChange,
+    useSelectedDiagramNodes,
+    useViewIds,
+} from '../recolor-targets';
 
 export interface AreaNodeContextMenuProps {
     area: Area;
@@ -28,9 +35,27 @@ export const AreaNodeContextMenu: React.FC<
         relationships,
         updateTablesState,
         updateArea,
+        recolorEntities,
     } = useChartDB();
     const { isMd: isDesktop } = useBreakpoint('md');
     const { getNodes } = useReactFlow();
+    const selectedDiagramNodes = useSelectedDiagramNodes();
+    const viewIds = useViewIds();
+    const colorTargets = useMemo(
+        () =>
+            getColorChangeTargets({
+                selected: selectedDiagramNodes,
+                viewIds,
+                clicked: { id: area.id, type: 'area' },
+            }),
+        [selectedDiagramNodes, viewIds, area.id]
+    );
+    const setColor = useCallback(
+        (color: string) => {
+            recolorEntities(toRecolorChange(colorTargets, color));
+        },
+        [recolorEntities, colorTargets]
+    );
 
     const removeAreaHandler = useCallback(() => {
         removeArea(area.id);
@@ -98,6 +123,7 @@ export const AreaNodeContextMenu: React.FC<
                     <span>Auto Arrange</span>
                     <LayoutGrid className="size-3.5" />
                 </ContextMenuItem>
+                <SetColorMenu targets={colorTargets} onColor={setColor} />
                 <ContextMenuSeparator />
                 <ContextMenuItem
                     onClick={removeAreaHandler}

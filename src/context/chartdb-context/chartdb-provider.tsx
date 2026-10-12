@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import type { DBTable } from '@/lib/domain/db-table';
 import { deepCopy, generateId } from '@/lib/utils';
 import { defaultTableColor, randomColor, viewColor } from '@/lib/colors';
@@ -34,6 +34,10 @@ import {
     type DBCustomType,
 } from '@/lib/domain/db-custom-type';
 import { getDefaultPrimaryKeyType } from '@/lib/data/data-types/data-types';
+import type {
+    ColorLegend,
+    RecolorEntitiesChange,
+} from '@/lib/domain/color-legend';
 
 export interface ChartDBProviderProps {
     diagram?: Diagram;
@@ -71,6 +75,10 @@ export const ChartDBProvider: React.FC<
         diagram?.customTypes ?? []
     );
     const [notes, setNotes] = useState<Note[]>(diagram?.notes ?? []);
+    const [colorLegend, setColorLegend] = useState<ColorLegend | undefined>(
+        diagram?.colorLegend
+    );
+    const colorLegendRef = useRef(colorLegend);
 
     const { events: diffEvents } = useDiff();
 
@@ -154,6 +162,7 @@ export const ChartDBProvider: React.FC<
             areas,
             customTypes,
             notes,
+            colorLegend,
         }),
         [
             diagramId,
@@ -166,6 +175,7 @@ export const ChartDBProvider: React.FC<
             areas,
             customTypes,
             notes,
+            colorLegend,
             diagramCreatedAt,
             diagramUpdatedAt,
         ]
@@ -208,6 +218,8 @@ export const ChartDBProvider: React.FC<
             setAreas([]);
             setCustomTypes([]);
             setNotes([]);
+            setColorLegend(undefined);
+            colorLegendRef.current = undefined;
             resetRedoStack();
             resetUndoStack();
 
@@ -297,6 +309,30 @@ export const ChartDBProvider: React.FC<
             diagramName,
             resetRedoStack,
         ]
+    );
+
+    const updateColorLegend: ChartDBContext['updateColorLegend'] = useCallback(
+        async (next, options = { updateHistory: true }) => {
+            const prev = colorLegendRef.current;
+            colorLegendRef.current = next;
+            setColorLegend(next);
+            const updatedAt = new Date();
+            setDiagramUpdatedAt(updatedAt);
+            await db.updateDiagram({
+                id: diagramId,
+                attributes: { colorLegend: next, updatedAt },
+            });
+
+            if (options.updateHistory) {
+                addUndoAction({
+                    action: 'updateColorLegend',
+                    redoData: { colorLegend: next },
+                    undoData: { colorLegend: prev },
+                });
+                resetRedoStack();
+            }
+        },
+        [db, diagramId, setDiagramUpdatedAt, addUndoAction, resetRedoStack]
     );
 
     const addTables: ChartDBContext['addTables'] = useCallback(
@@ -1868,6 +1904,149 @@ export const ChartDBProvider: React.FC<
         [db, diagramId, setNotes, getNote, addUndoAction, resetRedoStack]
     );
 
+    const recolorEntities: ChartDBContext['recolorEntities'] = useCallback(
+        async (change, options = { updateHistory: true }) => {
+            const nextTables = change.tables.filter((item) => {
+                const table = tables.find(
+                    (candidate) => candidate.id === item.id
+                );
+                return !!table && !table.isView && table.color !== item.color;
+            });
+            const nextNotes = change.notes.filter((item) => {
+                const note = notes.find(
+                    (candidate) => candidate.id === item.id
+                );
+                return !!note && note.color !== item.color;
+            });
+            const nextAreas = change.areas.filter((item) => {
+                const area = areas.find(
+                    (candidate) => candidate.id === item.id
+                );
+                return !!area && area.color !== item.color;
+            });
+
+            if (
+                nextTables.length === 0 &&
+                nextNotes.length === 0 &&
+                nextAreas.length === 0
+            ) {
+                return;
+            }
+
+            const previous: RecolorEntitiesChange = {
+                tables: nextTables.map((item) => ({
+                    id: item.id,
+                    color:
+                        tables.find((table) => table.id === item.id)?.color ??
+                        item.color,
+                })),
+                notes: nextNotes.map((item) => ({
+                    id: item.id,
+                    color:
+                        notes.find((note) => note.id === item.id)?.color ??
+                        item.color,
+                })),
+                areas: nextAreas.map((item) => ({
+                    id: item.id,
+                    color:
+                        areas.find((area) => area.id === item.id)?.color ??
+                        item.color,
+                })),
+            };
+
+            const tableColors = new Map(
+                nextTables.map((item) => [item.id, item.color])
+            );
+            const noteColors = new Map(
+                nextNotes.map((item) => [item.id, item.color])
+            );
+            const areaColors = new Map(
+                nextAreas.map((item) => [item.id, item.color])
+            );
+
+            if (tableColors.size > 0) {
+                setTables((current) =>
+                    current.map((table) => {
+                        const color = tableColors.get(table.id);
+                        return color ? { ...table, color } : table;
+                    })
+                );
+                for (const item of nextTables) {
+                    events.emit({
+                        action: 'update_table',
+                        data: { id: item.id, table: { color: item.color } },
+                    });
+                }
+            }
+
+            if (noteColors.size > 0) {
+                setNotes((current) =>
+                    current.map((note) => {
+                        const color = noteColors.get(note.id);
+                        return color ? { ...note, color } : note;
+                    })
+                );
+            }
+
+            if (areaColors.size > 0) {
+                setAreas((current) =>
+                    current.map((area) => {
+                        const color = areaColors.get(area.id);
+                        return color ? { ...area, color } : area;
+                    })
+                );
+            }
+
+            const updatedAt = new Date();
+            setDiagramUpdatedAt(updatedAt);
+
+            await Promise.all([
+                db.updateDiagram({ id: diagramId, attributes: { updatedAt } }),
+                ...nextTables.map((item) =>
+                    db.updateTable({
+                        id: item.id,
+                        attributes: { color: item.color },
+                    })
+                ),
+                ...nextNotes.map((item) =>
+                    db.updateNote({
+                        id: item.id,
+                        attributes: { color: item.color },
+                    })
+                ),
+                ...nextAreas.map((item) =>
+                    db.updateArea({
+                        id: item.id,
+                        attributes: { color: item.color },
+                    })
+                ),
+            ]);
+
+            if (options.updateHistory) {
+                addUndoAction({
+                    action: 'recolorEntities',
+                    redoData: {
+                        tables: nextTables,
+                        notes: nextNotes,
+                        areas: nextAreas,
+                    },
+                    undoData: previous,
+                });
+                resetRedoStack();
+            }
+        },
+        [
+            tables,
+            notes,
+            areas,
+            db,
+            diagramId,
+            events,
+            addUndoAction,
+            resetRedoStack,
+        ]
+    );
+
     const highlightCustomTypeId = useCallback(
         (id?: string) => setHighlightedCustomTypeId(id),
         [setHighlightedCustomTypeId]
@@ -1895,6 +2074,8 @@ export const ChartDBProvider: React.FC<
                 setDiagramUpdatedAt(diagram.updatedAt);
                 setHighlightedCustomTypeId(undefined);
                 setNotes(diagram.notes ?? []);
+                setColorLegend(diagram.colorLegend);
+                colorLegendRef.current = diagram.colorLegend;
 
                 events.emit({ action: 'load_diagram', data: { diagram } });
 
@@ -1916,6 +2097,7 @@ export const ChartDBProvider: React.FC<
                 setHighlightedCustomTypeId,
                 events,
                 setNotes,
+                setColorLegend,
                 resetRedoStack,
                 resetUndoStack,
             ]
@@ -2106,6 +2288,7 @@ export const ChartDBProvider: React.FC<
                 dependencies,
                 areas,
                 notes,
+                colorLegend,
                 currentDiagram,
                 schemas,
                 events,
@@ -2113,6 +2296,8 @@ export const ChartDBProvider: React.FC<
                 updateDiagramData,
                 updateDiagramId,
                 updateDiagramName,
+                updateColorLegend,
+                recolorEntities,
                 loadDiagram,
                 loadDiagramFromData,
                 updateDatabaseType,

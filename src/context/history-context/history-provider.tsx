@@ -20,6 +20,8 @@ export const HistoryProvider: React.FC<React.PropsWithChildren> = ({
         removeTables,
         updateTable,
         updateDiagramName,
+        updateColorLegend,
+        recolorEntities,
         removeField,
         addField,
         updateField,
@@ -51,6 +53,12 @@ export const HistoryProvider: React.FC<React.PropsWithChildren> = ({
         (): RedoUndoActionHandlers => ({
             updateDiagramName: ({ redoData: { name } }) => {
                 return updateDiagramName(name, { updateHistory: false });
+            },
+            updateColorLegend: ({ redoData: { colorLegend } }) => {
+                return updateColorLegend(colorLegend, { updateHistory: false });
+            },
+            recolorEntities: ({ redoData }) => {
+                return recolorEntities(redoData, { updateHistory: false });
             },
             addTables: ({ redoData: { tables } }) => {
                 return addTables(tables, { updateHistory: false });
@@ -180,6 +188,8 @@ export const HistoryProvider: React.FC<React.PropsWithChildren> = ({
             removeTables,
             updateTable,
             updateDiagramName,
+            updateColorLegend,
+            recolorEntities,
             removeField,
             addField,
             updateField,
@@ -212,6 +222,12 @@ export const HistoryProvider: React.FC<React.PropsWithChildren> = ({
         (): RedoUndoActionHandlers => ({
             updateDiagramName: ({ undoData: { name } }) => {
                 return updateDiagramName(name, { updateHistory: false });
+            },
+            updateColorLegend: ({ undoData: { colorLegend } }) => {
+                return updateColorLegend(colorLegend, { updateHistory: false });
+            },
+            recolorEntities: ({ undoData }) => {
+                return recolorEntities(undoData, { updateHistory: false });
             },
             addTables: ({ undoData: { tableIds } }) => {
                 return removeTables(tableIds, { updateHistory: false });
@@ -353,6 +369,8 @@ export const HistoryProvider: React.FC<React.PropsWithChildren> = ({
             removeTables,
             updateTable,
             updateDiagramName,
+            updateColorLegend,
+            recolorEntities,
             removeField,
             addField,
             updateField,

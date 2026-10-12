@@ -12,6 +12,8 @@ import {
 } from '@/components/sidebar/sidebar';
 import {
     BookOpen,
+    ChevronLeft,
+    ChevronRight,
     Group,
     FileType,
     Plus,
@@ -45,6 +47,8 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = () => {
     const {
         selectSidebarSection,
         selectedSidebarSection,
+        isSidePanelShowed,
+        hideSidePanel,
         showSidePanel,
         selectVisualsTab,
     } = useLayout();
@@ -195,9 +199,9 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = () => {
                 </SidebarHeader>
             ) : null}
             <SidebarContent>
-                <SidebarGroup>
+                <SidebarGroup className="flex-1">
                     {/* <SidebarGroupLabel /> */}
-                    <SidebarGroupContent>
+                    <SidebarGroupContent className="flex h-full flex-col">
                         <SidebarMenu>
                             {diagramItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
@@ -247,6 +251,42 @@ export const EditorSidebar: React.FC<EditorSidebarProps> = () => {
                                 </SidebarMenuItem>
                             ))}
                         </SidebarMenu>
+                        <div className="flex flex-1 items-center justify-center">
+                            <SidebarMenu>
+                                <SidebarMenuItem>
+                                    <SidebarMenuButton
+                                        className="justify-center space-y-0.5 !px-0 hover:bg-gray-200 data-[active=true]:bg-gray-100 data-[active=true]:text-pink-600 data-[active=true]:hover:bg-pink-100 dark:hover:bg-gray-800 dark:data-[active=true]:bg-gray-900 dark:data-[active=true]:text-pink-400 dark:data-[active=true]:hover:bg-pink-950"
+                                        asChild
+                                    >
+                                        <button
+                                            type="button"
+                                            aria-label={
+                                                isSidePanelShowed
+                                                    ? t(
+                                                          'menu.view.hide_sidebar'
+                                                      )
+                                                    : t(
+                                                          'menu.view.show_sidebar'
+                                                      )
+                                            }
+                                            onClick={() => {
+                                                if (isSidePanelShowed) {
+                                                    hideSidePanel();
+                                                } else {
+                                                    showSidePanel();
+                                                }
+                                            }}
+                                        >
+                                            {isSidePanelShowed ? (
+                                                <ChevronLeft />
+                                            ) : (
+                                                <ChevronRight />
+                                            )}
+                                        </button>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            </SidebarMenu>
+                        </div>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>

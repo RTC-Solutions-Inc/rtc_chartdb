@@ -12,7 +12,7 @@ import { useBreakpoint } from '@/hooks/use-breakpoint';
 import { useChartDB } from '@/hooks/use-chartdb';
 import { useDialog } from '@/hooks/use-dialog';
 import { useReactFlow, useStore } from '@xyflow/react';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
     Table,
@@ -31,6 +31,14 @@ import { useCanvas } from '@/hooks/use-canvas';
 import { defaultSchemas } from '@/lib/data/default-schemas';
 import { useAlert } from '@/context/alert-context/alert-context';
 import { arrangeTablesForArea } from '@/lib/utils/area-utils';
+import { SetColorMenu } from './set-color-menu';
+import {
+    colorTargetCount,
+    getColorChangeTargets,
+    toRecolorChange,
+    useSelectedDiagramNodes,
+    useViewIds,
+} from './recolor-targets';
 
 export const CanvasContextMenu: React.FC<React.PropsWithChildren> = ({
     children,
@@ -46,6 +54,7 @@ export const CanvasContextMenu: React.FC<React.PropsWithChildren> = ({
         relationships,
         updateArea,
         updateTablesState,
+        recolorEntities,
     } = useChartDB();
     const { schemasDisplayed } = useDiagramFilter();
     const { openCreateRelationshipDialog, openImportDatabaseDialog } =
@@ -65,6 +74,22 @@ export const CanvasContextMenu: React.FC<React.PropsWithChildren> = ({
             .map((n) => n.id)
     );
     const hasSelectedTables = selectedTableIds.length > 0;
+    const selectedDiagramNodes = useSelectedDiagramNodes();
+    const viewIds = useViewIds();
+    const colorTargets = useMemo(
+        () =>
+            getColorChangeTargets({
+                selected: selectedDiagramNodes,
+                viewIds,
+            }),
+        [selectedDiagramNodes, viewIds]
+    );
+    const setColor = useCallback(
+        (color: string) => {
+            recolorEntities(toRecolorChange(colorTargets, color));
+        },
+        [recolorEntities, colorTargets]
+    );
 
     const createTableHandler = useCallback(
         async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -383,6 +408,15 @@ export const CanvasContextMenu: React.FC<React.PropsWithChildren> = ({
                         </ContextMenuSub>
                     </>
                 )}
+                {colorTargetCount(colorTargets) > 0 ? (
+                    <>
+                        <ContextMenuSeparator />
+                        <SetColorMenu
+                            targets={colorTargets}
+                            onColor={setColor}
+                        />
+                    </>
+                ) : null}
                 <ContextMenuSeparator />
                 <ContextMenuItem
                     onClick={autoArrangeHandler}
